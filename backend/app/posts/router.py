@@ -14,5 +14,6 @@ router = APIRouter(
 async def root(session: Annotated[Session, Depends(get_session)], 
                page: int = 1, size: int = 10) -> Sequence[Post]:
 
-    statement = select(Post)    
+    offset = (page - 1) * size
+    statement = select(Post).offset(offset).limit(size)  
     return session.exec(statement).all()
