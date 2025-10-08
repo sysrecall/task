@@ -1,19 +1,21 @@
 from fastapi import APIRouter, HTTPException
-from .schemas.Post import Post
-from .schemas.GetPosts import GetPostsSchema
+from .schemas.Movie import Movie
+from .schemas.GetMovies import GetMoviesSchema 
 from database import get_session
-from sqlmodel import Session, select, desc, asc
+from sqlmodel import Session, select, desc, asc, column
 from typing import Annotated, Sequence, Literal
 from fastapi import Depends, Query
-from posts.model import Post
+from movies.model import Movie
 
 router = APIRouter(
-    prefix="/posts"
+    prefix="/movies"
 )
 
 SORT_OPTIONS = {
-    "userId": Post.userId,
-    "id": Post.id,
+    "id": Movie.id,
+    "title": Movie.title,
+    "genre": Movie.genre,
+    "released": Movie.released,
 }
 
 ORDER_OPTIONS = {
@@ -21,12 +23,12 @@ ORDER_OPTIONS = {
     "asc": asc
 }
 
-def get_posts(session: Session, query: Annotated[GetPostsSchema, Query()]):
-    statement = select(Post)
+def get_movies(session: Session, query: Annotated[GetMoviesSchema, Query()]):
+    statement = select(Movie)
 
-    # filter by userId
-    if query.userId != None:
-        statement = statement.where(Post.userId == query.userId)
+    # filter by genre
+    if query.genre:
+        statement = statement.where(column("genre").contains(query.genre))
 
     # sort by given column and order
     if query.sort:
@@ -42,7 +44,7 @@ def get_posts(session: Session, query: Annotated[GetPostsSchema, Query()]):
             )
         )
 
-    # apply size and limit of results
+    # apply offset and limit
     offset = (query.page - 1) * query.size
     statement = statement.offset(offset).limit(query.size)  
     
@@ -52,7 +54,7 @@ def get_posts(session: Session, query: Annotated[GetPostsSchema, Query()]):
 @router.get("/", tags=["/"])
 async def root(
         session: Annotated[Session, Depends(get_session)], 
-        query: Annotated[GetPostsSchema, Query()]
-    ) -> Sequence[Post]:
+        query: Annotated[GetMoviesSchema, Query()]
+    ) -> Sequence[Movie]:
 
-    return get_posts(session, query)
+    return get_movies(session, query)

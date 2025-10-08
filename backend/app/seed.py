@@ -6,27 +6,19 @@ from fastapi import Depends
 import requests as req
 import json
 from fastapi import APIRouter
-from posts.model import Post
+from movies.model import Movie
 
 router = APIRouter(
     prefix="/seed", tags=["Seed"]
 )
 
 # load json data from disk or url
-def get_data(live=False, path="data.json"):
-    if live:
-        try:
-            res = req.get("https://jsonplaceholder.typicode.com/posts")
-            return res.json()
-        except req.exceptions.RequestException as e:
-            print(e)
-            return
-
+def get_data(path="data.json"):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def drop_table(session: Session):
-    statement = delete(Post)
+    statement = delete(Movie)
     session.exec(statement=statement)
     session.commit()
 
@@ -41,7 +33,7 @@ def seed(session: Annotated[Session, Depends(get_session)]):
 
     # seed table
     for d in data:
-        session.add(Post(**d))
+        session.add(Movie(**d))
     session.commit()
 
     return {"message": "data added"}
