@@ -26,7 +26,6 @@ def get_data(live=False, path="data.json"):
         return json.load(f)
 
 def drop_table(session: Session):
-    # drop table
     statement = delete(Post)
     session.exec(statement=statement)
     session.commit()
