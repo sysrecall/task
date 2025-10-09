@@ -15,7 +15,8 @@ cd task
 2. Build & Start
 
 ```bash
-docker-compose up --build -d
+docker-compose build
+docker-compose up -d
 ```
 
 3. Open Browser and Type
