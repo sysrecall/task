@@ -2,6 +2,10 @@
 FROM node:24-alpine AS builder
 WORKDIR /usr/src/app
 
+# Accept build-time environment variable
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Install dependencies
 COPY package*.json ./
 RUN npm install

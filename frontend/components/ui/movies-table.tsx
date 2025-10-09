@@ -38,7 +38,7 @@ const MoviesTable = () => {
           ...(size && { size }),
         };
 
-        const response = await axios.get(apiUrl + '/movies', { params });
+        const response = await axios.get(apiUrl + '/movies/', { params }); // the extra / is important
         setMovies(response.data);
       } catch (err) {
         setError(err as AxiosError);
