@@ -1,9 +1,14 @@
+import os
 import redis
 from functools import wraps
 import pickle
 from typing import Any, Awaitable, Callable, List
 
-pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+
+redis_host = os.getenv("REDIS_HOST", "localhost")
+redis_port = int(os.getenv("REDIS_PORT", 6379))
+
+pool = redis.ConnectionPool(host=redis_host, port=redis_port, db=0)
 r = redis.Redis(connection_pool=pool, decode_responses=True)
 
 def cache(expire_time: int, exclude_params: List[str] | None = None):
@@ -27,8 +32,6 @@ def cache(expire_time: int, exclude_params: List[str] | None = None):
             cache_key_parts.append(str(sorted(kwargs_filtered.items())))
 
             cache_key = ':'.join(cache_key_parts)
-            print('args:', args)
-            print('cache key:', cache_key)
             cached_result = r.get(cache_key)
 
             if isinstance(cached_result, Awaitable):

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from .schemas.Movie import Movie as MovieSchema
 from .schemas.GetMovies import GetMoviesSchema 
-from database import get_session
+from ..database import get_session
 from sqlmodel import Session, select, desc, asc, column
 from typing import Annotated, Sequence, Literal
 from fastapi import Depends, Query
-from movies.model import Movie as MovieModel
-from decorators import cache
+from .model import Movie as MovieModel
+from ..decorators import cache
 
 router = APIRouter(
     prefix="/movies"

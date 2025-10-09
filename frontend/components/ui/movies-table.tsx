@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
+import Movie from '@/app/interfaces/Movie'
 
 const MoviesTable = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -13,6 +14,9 @@ const MoviesTable = () => {
   const [genreInput, setGenreInput] = useState('');
   const [page, setPage] = useState(1);
   const [size] = useState(10);
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -34,7 +38,7 @@ const MoviesTable = () => {
           ...(size && { size }),
         };
 
-        const response = await axios.get('http://localhost:8000/movies', { params });
+        const response = await axios.get(apiUrl + '/movies', { params });
         setMovies(response.data);
       } catch (err) {
         setError(err as AxiosError);

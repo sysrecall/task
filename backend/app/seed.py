@@ -1,12 +1,12 @@
 # seed database
-from database import get_session
+from .database import get_session
 from sqlmodel import Session, delete
 from typing import Annotated
 from fastapi import Depends
 import requests as req
 import json
 from fastapi import APIRouter
-from movies.model import Movie
+from .movies.model import Movie
 
 router = APIRouter(
     prefix="/seed", tags=["Seed"]

@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from movies.router import router as movie_router
-from seed import router as seed_router 
+from .movies.router import router as movie_router
+from .seed import router as seed_router 
 from contextlib import asynccontextmanager
-from database import create_tables
+from .database import create_tables
 
 
 @asynccontextmanager
