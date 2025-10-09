@@ -1,21 +1,22 @@
 from fastapi import APIRouter, HTTPException
-from .schemas.Movie import Movie
+from .schemas.Movie import Movie as MovieSchema
 from .schemas.GetMovies import GetMoviesSchema 
 from database import get_session
 from sqlmodel import Session, select, desc, asc, column
 from typing import Annotated, Sequence, Literal
 from fastapi import Depends, Query
-from movies.model import Movie
+from movies.model import Movie as MovieModel
+from decorators import cache
 
 router = APIRouter(
     prefix="/movies"
 )
 
 SORT_OPTIONS = {
-    "id": Movie.id,
-    "title": Movie.title,
-    "genre": Movie.genre,
-    "released": Movie.released,
+    "id": MovieModel.id,
+    "title": MovieModel.title,
+    "genre": MovieModel.genre,
+    "released": MovieModel.released,
 }
 
 ORDER_OPTIONS = {
@@ -23,8 +24,9 @@ ORDER_OPTIONS = {
     "asc": asc
 }
 
+@cache(expire_time=300, exclude_params=['session'])
 def get_movies(session: Session, query: Annotated[GetMoviesSchema, Query()]):
-    statement = select(Movie)
+    statement = select(MovieModel)
 
     # filter by genre
     if query.genre:
@@ -55,6 +57,6 @@ def get_movies(session: Session, query: Annotated[GetMoviesSchema, Query()]):
 async def root(
         session: Annotated[Session, Depends(get_session)], 
         query: Annotated[GetMoviesSchema, Query()]
-    ) -> Sequence[Movie]:
+    ) -> Sequence[MovieSchema]:
 
-    return get_movies(session, query)
+    return await get_movies(session, query)

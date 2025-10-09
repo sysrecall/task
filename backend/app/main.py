@@ -30,5 +30,5 @@ app.include_router(movie_router)
 app.include_router(seed_router)
 
 @app.get("/", tags=["Home"])
-async def root():
+def root():
     return {"message": "Hello, World!"}
