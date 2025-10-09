@@ -94,3 +94,4 @@ If I had more time, I would:
 - Implement persistent database storage (PostgreSQL or MySQL).  
 - Implement cache invalidation strategies and TTL management for Redis.  
 - Improve frontend UI/UX with a component library (e.g., Shadcn).  
+- Make the app accessible to other devices through a reverse proxy (e.g., Nginx)
